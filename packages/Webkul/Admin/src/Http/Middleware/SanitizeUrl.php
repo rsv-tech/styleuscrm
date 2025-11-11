@@ -16,8 +16,12 @@ class SanitizeUrl
      */
     public function handle($request, Closure $next)
     {
+        if($request->ajax()) {
+            return $next($request);
+        }
+
         $route = $request->route('route');
-    
+
         $sanitizedRoute = Str::of($route)->ascii()->lower()->replaceMatches('/[^a-z0-9_-]/', '')->__toString();
 
         $request->route()->setParameter('route', $sanitizedRoute);
