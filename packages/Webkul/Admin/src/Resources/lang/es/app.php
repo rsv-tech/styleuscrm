@@ -1673,7 +1673,7 @@ return [
                 'delete'        => 'Eliminar',
             ],
         ],
-        
+
         'create-success'      => 'Correo enviado con éxito.',
         'update-success'      => 'Correo actualizado con éxito.',
         'mass-update-success' => 'Correos actualizados con éxito.',

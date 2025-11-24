@@ -3,23 +3,23 @@
 namespace Webkul\Admin\Http\Controllers\Mail;
 
 use Exception;
-use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Webkul\Email\Mails\Email;
-use Webkul\Email\Enums\SupportedFolderEnum;
-use Webkul\Lead\Repositories\LeadRepository;
-use Webkul\Admin\Http\Controllers\Controller;
+use Illuminate\View\View;
 use Webkul\Admin\DataGrids\Mail\EmailDataGrid;
-use Webkul\Admin\Http\Resources\EmailResource;
-use Webkul\Email\Repositories\EmailRepository;
-use Webkul\Admin\Http\Requests\MassUpdateRequest;
+use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Admin\Http\Requests\MassDestroyRequest;
-use Webkul\Email\Repositories\AttachmentRepository;
+use Webkul\Admin\Http\Requests\MassUpdateRequest;
+use Webkul\Admin\Http\Resources\EmailResource;
+use Webkul\Email\Enums\SupportedFolderEnum;
 use Webkul\Email\InboundEmailProcessor\Contracts\InboundEmailProcessor;
+use Webkul\Email\Mails\Email;
+use Webkul\Email\Repositories\AttachmentRepository;
+use Webkul\Email\Repositories\EmailRepository;
+use Webkul\Lead\Repositories\LeadRepository;
 
 class EmailController extends Controller
 {
@@ -45,7 +45,7 @@ class EmailController extends Controller
             return redirect()->route('admin.mail.index', ['route' => SupportedFolderEnum::INBOX->value]);
         }
 
-        if (! bouncer()->hasPermission('mail.' . $route)) {
+        if (! bouncer()->hasPermission('mail.'.$route)) {
             abort(401, trans('admin::app.mail.unauthorized'));
         }
 
@@ -64,7 +64,7 @@ class EmailController extends Controller
     public function view()
     {
         $route = request('route');
-        
+
         $email = $this->emailRepository
             ->with([
                 'emails',
@@ -75,7 +75,7 @@ class EmailController extends Controller
                 'lead.tags',
                 'lead.source',
                 'lead.type',
-                'person'
+                'person',
             ])
             ->findOrFail(request('id'));
 

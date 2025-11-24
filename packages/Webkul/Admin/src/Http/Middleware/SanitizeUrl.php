@@ -16,7 +16,7 @@ class SanitizeUrl
      */
     public function handle($request, Closure $next)
     {
-        if($request->ajax()) {
+        if ($request->ajax()) {
             return $next($request);
         }
 
@@ -43,7 +43,7 @@ class SanitizeUrl
         if (! in_array($route, $allowedRoutes, true)) {
             abort(401, trans('admin::app.mail.invalid-route'));
         }
-        
+
         return $next($request);
     }
 }

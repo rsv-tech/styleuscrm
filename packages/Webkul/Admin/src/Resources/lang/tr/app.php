@@ -1673,7 +1673,7 @@ return [
                 'delete'        => 'Sil',
             ],
         ],
-        
+
         'create-success'      => 'E-posta başarıyla gönderildi.',
         'update-success'      => 'E-posta başarıyla güncellendi.',
         'mass-update-success' => 'E-postalar başarıyla güncellendi.',
