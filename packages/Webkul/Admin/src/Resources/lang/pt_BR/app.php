@@ -2030,8 +2030,10 @@ return [
     ],
     'dashboard' => [
         'index' => [
-            'title'   => 'Início',
-            'revenue' => [
+            'title'      => 'Início',
+            'start-date' => 'Start Date',
+            'end-date'   => 'End Date',
+            'revenue'    => [
                 'lost-revenue' => 'Negócios Perdidos',
                 'won-revenue'  => 'Negócios Ganhos',
             ],

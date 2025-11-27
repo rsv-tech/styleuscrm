@@ -2030,8 +2030,10 @@ return [
     ],
     'dashboard' => [
         'index' => [
-            'title'   => 'لوحة القيادة',
-            'revenue' => [
+            'title'      => 'لوحة القيادة',
+            'start-date' => 'Start Date',
+            'end-date'   => 'End Date',
+            'revenue'    => [
                 'lost-revenue' => 'الإيرادات المفقودة',
                 'won-revenue'  => 'الإيرادات المكتسبة',
             ],

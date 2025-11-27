@@ -2030,8 +2030,10 @@ return [
     ],
     'dashboard' => [
         'index' => [
-            'title'   => 'Tablero',
-            'revenue' => [
+            'title'      => 'Tablero',
+            'start-date' => 'Start Date',
+            'end-date'   => 'End Date',
+            'revenue'    => [
                 'lost-revenue' => 'Ingresos Perdidos',
                 'won-revenue'  => 'Ingresos Ganados',
             ],

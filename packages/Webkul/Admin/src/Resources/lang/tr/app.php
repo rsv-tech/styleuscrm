@@ -2030,8 +2030,10 @@ return [
     ],
     'dashboard' => [
         'index' => [
-            'title'   => 'Gösterge Paneli',
-            'revenue' => [
+            'title'      => 'Gösterge Paneli',
+            'start-date' => 'Start Date',
+            'end-date'   => 'End Date',
+            'revenue'    => [
                 'lost-revenue' => 'Kayıp Gelir',
                 'won-revenue'  => 'Kazançlı Gelir',
             ],
