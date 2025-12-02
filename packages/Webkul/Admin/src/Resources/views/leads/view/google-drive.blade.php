@@ -54,6 +54,27 @@
             <div class="text-sm text-gray-600 dark:text-gray-400">
                 <span class="icon-file text-base"></span>
                 <span id="files-count-{{ $lead->id }}">...</span> files
+                <button 
+                    type="button"
+                    onclick="toggleFilesList{{ $lead->id }}()"
+                    class="ml-2 text-xs text-blue-600 hover:text-blue-700"
+                    id="toggle-files-btn-{{ $lead->id }}"
+                >
+                    Show files
+                </button>
+            </div>
+
+            {{-- Collapsible Files List --}}
+            <div id="files-list-container-{{ $lead->id }}" class="mt-3 hidden">
+                <div id="files-loading-{{ $lead->id }}" class="text-center text-sm text-gray-500">
+                    Loading...
+                </div>
+                <div id="files-list-{{ $lead->id }}" class="hidden max-h-60 overflow-y-auto">
+                    {{-- Files will be loaded here --}}
+                </div>
+                <div id="files-empty-{{ $lead->id }}" class="hidden text-sm text-gray-500">
+                    No files found
+                </div>
             </div>
         @endif
     </div>
@@ -240,6 +261,119 @@
                     }
                 }
             });
+    }
+
+    // Toggle files list visibility
+    window.toggleFilesList{{ $lead->id }} = function() {
+        const container = document.getElementById('files-list-container-{{ $lead->id }}');
+        const btn = document.getElementById('toggle-files-btn-{{ $lead->id }}');
+        const filesList = document.getElementById('files-list-{{ $lead->id }}');
+        const filesEmpty = document.getElementById('files-empty-{{ $lead->id }}');
+        const filesLoading = document.getElementById('files-loading-{{ $lead->id }}');
+        
+        if (container.classList.contains('hidden')) {
+            // Show files list
+            container.classList.remove('hidden');
+            btn.textContent = 'Hide files';
+            
+            // Load files if not already loaded
+            if (filesList.classList.contains('hidden') && filesEmpty.classList.contains('hidden')) {
+                loadFilesList{{ $lead->id }}();
+            }
+        } else {
+            // Hide files list
+            container.classList.add('hidden');
+            btn.textContent = 'Show files';
+        }
+    };
+
+    // Load files list
+    function loadFilesList{{ $lead->id }}() {
+        const filesLoading = document.getElementById('files-loading-{{ $lead->id }}');
+        const filesList = document.getElementById('files-list-{{ $lead->id }}');
+        const filesEmpty = document.getElementById('files-empty-{{ $lead->id }}');
+
+        filesLoading.classList.remove('hidden');
+        filesList.classList.add('hidden');
+        filesEmpty.classList.add('hidden');
+
+        fetch('/admin/leads/{{ $lead->id }}/drive/files', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            filesLoading.classList.add('hidden');
+            
+            if (data.success && data.files && data.files.length > 0) {
+                renderFilesList{{ $lead->id }}(data.files);
+                filesList.classList.remove('hidden');
+            } else {
+                filesEmpty.classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading files:', error);
+            filesLoading.classList.add('hidden');
+            filesEmpty.classList.remove('hidden');
+        });
+    }
+
+    // Render files list
+    function renderFilesList{{ $lead->id }}(files) {
+        const filesList = document.getElementById('files-list-{{ $lead->id }}');
+        
+        const html = files.map(file => {
+            const icon = getFileIcon{{ $lead->id }}(file.mimeType);
+            const size = formatFileSize{{ $lead->id }}(file.size);
+            
+            return `
+                <div class="flex items-center gap-2 border-b border-gray-100 py-2 last:border-0 dark:border-gray-800">
+                    <span class="${icon} text-lg text-gray-400"></span>
+                    <div class="flex-1 min-w-0">
+                        <p class="truncate text-sm font-medium dark:text-white">${escapeHtml{{ $lead->id }}(file.name)}</p>
+                        <p class="text-xs text-gray-500">${size}</p>
+                    </div>
+                    <a 
+                        href="${file.url}" 
+                        target="_blank"
+                        class="text-xs text-blue-600 hover:text-blue-700"
+                    >
+                        Open
+                    </a>
+                </div>
+            `;
+        }).join('');
+        
+        filesList.innerHTML = html;
+    }
+
+    // Helper functions
+    function getFileIcon{{ $lead->id }}(mimeType) {
+        if (mimeType.includes('folder')) return 'icon-folder';
+        if (mimeType.includes('image')) return 'icon-image';
+        if (mimeType.includes('pdf')) return 'icon-file-text';
+        if (mimeType.includes('document')) return 'icon-file-text';
+        if (mimeType.includes('spreadsheet')) return 'icon-table';
+        if (mimeType.includes('presentation')) return 'icon-presentation';
+        return 'icon-file';
+    }
+
+    function formatFileSize{{ $lead->id }}(bytes) {
+        if (!bytes) return 'Unknown size';
+        const kb = bytes / 1024;
+        const mb = kb / 1024;
+        if (mb >= 1) return `${mb.toFixed(1)} MB`;
+        if (kb >= 1) return `${kb.toFixed(0)} KB`;
+        return `${bytes} bytes`;
+    }
+
+    function escapeHtml{{ $lead->id }}(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     // Load data on page load
