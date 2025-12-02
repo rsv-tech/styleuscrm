@@ -150,24 +150,36 @@
             },
 
             mounted() {
+                console.log('🚀 Vue component mounted', {
+                    leadId: this.leadId,
+                    hasDriveFolder: this.hasDriveFolder,
+                    driveFolderUrl: this.driveFolderUrl
+                });
+                
                 if (this.hasDriveFolder) {
+                    console.log('✅ Has drive folder, loading files...');
                     this.loadFiles();
+                } else {
+                    console.log('❌ No drive folder');
                 }
             },
 
             methods: {
                 loadFiles() {
+                    console.log('📂 Loading files for lead:', this.leadId);
                     this.isLoading = true;
 
                     this.$axios.get(`/admin/leads/${this.leadId}/drive/files`)
                         .then(response => {
+                            console.log('📥 Response received:', response.data);
                             if (response.data.success) {
                                 this.files = response.data.files || [];
+                                console.log('✅ Files loaded:', this.files.length);
                             }
                             this.isLoading = false;
                         })
                         .catch(error => {
-                            console.error('Error loading Google Drive files:', error);
+                            console.error('❌ Error loading Google Drive files:', error);
                             this.isLoading = false;
                         });
                 },
